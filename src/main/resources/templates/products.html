@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理 - Dell</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background: #f7f7f7; }
+        header { background: #007db8; color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: #fff; text-decoration: none; font-size: 13px; background: #005a8a; padding: 6px 12px; border-radius: 4px; }
+        main { padding: 24px; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; font-size: 13px; text-align: left; }
+        th { background: #333; color: #fff; }
+    </style>
+</head>
+<body>
+<header>
+    <div>Dell 商品管理</div>
+    <a th:href="@{/products/new}">+ 新規商品登録</a>
+</header>
+<main>
+    <table>
+        <thead>
+        <tr><th>商品ID</th><th>商品名</th><th>価格</th><th>在庫</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="'¥' + ${product.price}"></td>
+            <td th:text="${product.stock}"></td>
+        </tr>
+        <tr th:if="${products.isEmpty()}">
+            <td colspan="4" style="text-align:center; color:#999;">商品がまだ登録されていません</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
