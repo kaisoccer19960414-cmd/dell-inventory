@@ -17,4 +17,6 @@ public class CreateProductRequest {
 
     @Min(0)
     private int stock;
+
+    private String idempotencyKey;
 }

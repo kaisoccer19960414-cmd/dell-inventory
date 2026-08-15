@@ -10,6 +10,7 @@
         .note { font-size: 12px; color: #666; margin-bottom: 16px; }
         input { width: 100%; padding: 8px; margin-bottom: 8px; box-sizing: border-box; }
         button { width: 100%; padding: 10px; background: #007db8; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-top: 8px; }
+        button:disabled { background: #999; cursor: not-allowed; }
         .error { color: #c0392b; font-size: 12px; margin: 0 0 8px; }
         a { font-size: 13px; }
     </style>
@@ -19,7 +20,7 @@
     <h1>新規商品登録</h1>
     <p class="note">登録すると商品IDが自動採番され、同時にAmazon側へも自動的に反映されます。</p>
 
-    <form method="post" th:action="@{/products/new}" th:object="${createProductRequest}">
+    <form id="createProductForm" method="post" th:action="@{/products/new}" th:object="${createProductRequest}">
         <input type="text" th:field="*{name}" placeholder="商品名">
         <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
 
@@ -29,10 +30,20 @@
         <input type="number" th:field="*{stock}" placeholder="在庫数">
         <p class="error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></p>
 
-        <button type="submit">登録する</button>
+        <input type="hidden" id="idempotencyKey" th:field="*{idempotencyKey}">
+
+        <button id="submitButton" type="submit">登録する</button>
     </form>
 
     <p><a th:href="@{/products}">商品一覧へ戻る</a></p>
 </div>
+
+<script>
+    document.getElementById('idempotencyKey').value = crypto.randomUUID();
+
+    document.getElementById('createProductForm').addEventListener('submit', function () {
+        document.getElementById('submitButton').disabled = true;
+    });
+</script>
 </body>
 </html>

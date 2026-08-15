@@ -12,7 +12,6 @@ import com.example.dell.exception.ReservationNotFoundException;
 import com.example.dell.repository.ProductRepository;
 import com.example.dell.repository.ReservationRepository;
 import jakarta.persistence.OptimisticLockException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +50,7 @@ class InventoryServiceTest {
 
     @Test
     void reserve_在庫が十分あれば予約できて在庫が減る() {
-        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 5);
+        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 5, null);
         ReserveRequest request = reserveRequest(2);
 
         when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
@@ -64,7 +63,7 @@ class InventoryServiceTest {
 
     @Test
     void reserve_在庫不足ならOutOfStockExceptionになる() {
-        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 1);
+        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 1, null);
         ReserveRequest request = reserveRequest(5);
 
         when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
@@ -77,7 +76,7 @@ class InventoryServiceTest {
 
     @Test
     void reserve_楽観ロック競合が起きたらOutOfStockExceptionとして扱う() {
-        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 5);
+        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 5, null);
         ReserveRequest request = reserveRequest(2);
 
         when(productRepository.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
@@ -134,7 +133,7 @@ class InventoryServiceTest {
     @Test
     void release_RESERVED状態なら在庫が戻り解放できる() {
         Reservation reservation = new Reservation(ORDER_ID, PRODUCT_ID, 2);
-        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 3);
+        Product product = new Product(PRODUCT_ID, "テスト商品", 10000, 3, null);
         ReleaseRequest request = releaseRequest();
 
         when(reservationRepository.findByIdAndOrderId(RESERVATION_ID, ORDER_ID))

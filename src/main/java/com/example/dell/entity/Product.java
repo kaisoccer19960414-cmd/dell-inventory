@@ -23,17 +23,21 @@ public class Product {
     @Version
     private int version;
 
-    public Product(String id, String name, int price, int stock) {
+    /**
+     * 登録リクエストごとにブラウザ側で発行される一意のキー。
+     * 通信の遅延で同じ登録ボタンを二度押ししても、二重登録を防ぐために使う。
+     */
+    @Column(name = "idempotency_key", unique = true)
+    private String idempotencyKey;
+
+    public Product(String id, String name, int price, int stock, String idempotencyKey) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
+        this.idempotencyKey = idempotencyKey;
     }
 
-    /**
-     * 在庫を減らす。不足時はIllegalStateExceptionを投げる。
-     * (楽観ロックによる同時アクセス競合の検知はJPAの@Versionが担う)
-     */
     public void decreaseStock(int quantity) {
         if (this.stock < quantity) {
             throw new IllegalStateException("在庫が不足しています");
@@ -41,9 +45,6 @@ public class Product {
         this.stock -= quantity;
     }
 
-    /**
-     * 在庫を戻す(release時に使用)
-     */
     public void increaseStock(int quantity) {
         this.stock += quantity;
     }
