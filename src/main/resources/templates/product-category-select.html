@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品登録 - カテゴリ選択 - Dell</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 60px; background: #f7f7f7; }
+        .box { background: #fff; padding: 32px; border-radius: 8px; width: 320px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        h1 { font-size: 18px; margin-top: 0; }
+        .note { font-size: 12px; color: #666; margin-bottom: 16px; }
+        a.category-link {
+            display: block; padding: 12px; margin-bottom: 8px; background: #f0f4f8;
+            border-radius: 4px; text-decoration: none; color: #333; font-size: 14px;
+        }
+        a.category-link:hover { background: #e0e8f0; }
+        a.back { font-size: 13px; margin-top: 8px; display: inline-block; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h1>商品登録</h1>
+    <p class="note">まず登録する商品のカテゴリを選んでください</p>
+
+    <a class="category-link" th:href="@{/products/new/LAPTOP}">ノートPC</a>
+    <a class="category-link" th:href="@{/products/new/DESKTOP}">デスクトップPC</a>
+    <a class="category-link" th:href="@{/products/new/MONITOR}">モニター</a>
+    <a class="category-link" th:href="@{/products/new/ACCESSORY}">アクセサリ</a>
+
+    <a class="back" th:href="@{/products}">商品一覧へ戻る</a>
+</div>
+</body>
+</html>

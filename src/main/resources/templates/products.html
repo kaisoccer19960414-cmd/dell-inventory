@@ -11,27 +11,54 @@
         table { border-collapse: collapse; width: 100%; background: #fff; }
         th, td { border: 1px solid #ddd; padding: 8px 12px; font-size: 13px; text-align: left; }
         th { background: #333; color: #fff; }
+        tr.inactive { background: #f0f0f0; color: #999; }
+        .status { padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #fff; }
+        .status-active { background: #2e8b57; }
+        .status-inactive { background: #999; }
+        .toggle-btn { padding: 4px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; color: #fff; }
+        .btn-deactivate { background: #c0392b; }
+        .btn-activate { background: #2e8b57; }
     </style>
 </head>
 <body>
 <header>
-    <div>Dell 商品管理</div>
-    <a th:href="@{/products/new}">+ 新規商品登録</a>
+    <div th:text="${showingActive} ? 'Dell 商品管理(販売中)' : 'Dell 商品管理(販売停止中)'"></div>
+    <div>
+        <a th:if="${showingActive}" th:href="@{/products/inactive}" class="nav-btn">販売停止中の商品を見る</a>
+        <a th:unless="${showingActive}" th:href="@{/products}" class="nav-btn">販売中の商品に戻る</a>
+        <a th:href="@{/products/new}">+ 新規商品登録</a>
+    </div>
 </header>
 <main>
     <table>
         <thead>
-        <tr><th>商品ID</th><th>商品名</th><th>価格</th><th>在庫</th></tr>
+        <tr><th>商品ID</th><th>商品名</th><th>カテゴリ</th><th>価格</th><th>在庫</th><th>ステータス</th><th>販売開始日</th><th>販売停止日</th><th>操作</th></tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
+        <tr th:each="product : ${products}" th:classappend="${!product.active} ? 'inactive' : ''">
             <td th:text="${product.id}"></td>
             <td th:text="${product.name}"></td>
+            <td th:text="${product.category}"></td>
             <td th:text="'¥' + ${product.price}"></td>
             <td th:text="${product.stock}"></td>
+            <td>
+                <span class="status" th:classappend="${product.active} ? 'status-active' : 'status-inactive'"
+                      th:text="${product.active} ? '販売中' : '停止中'"></span>
+            </td>
+            <td th:text="${product.activatedAt} ?: '-'"></td>
+            <td th:text="${product.deactivatedAt} ?: '-'"></td>
+            <td>
+                <form th:if="${product.active}" method="post" th:action="@{'/products/' + ${product.id} + '/deactivate'}">
+                    <button type="submit" class="toggle-btn btn-deactivate">販売停止</button>
+                </form>
+                <form th:unless="${product.active}" method="post" th:action="@{'/products/' + ${product.id} + '/activate'}">
+                    <button type="submit" class="toggle-btn btn-activate">販売再開</button>
+                </form>
+            </td>
         </tr>
         <tr th:if="${products.isEmpty()}">
-            <td colspan="4" style="text-align:center; color:#999;">商品がまだ登録されていません</td>
+            <td colspan="9" style="text-align:center; color:#999;"
+                th:text="${showingActive} ? '販売中の商品はありません' : '販売停止中の商品はありません'"></td>
         </tr>
         </tbody>
     </table>
